@@ -1,0 +1,48 @@
+<%# default partial to display solr document fields in catalog show view %>
+<dl class="dl-horizontal  dl-invert">
+  <% document_show_fields(document).each do |solr_fname, field| %>
+    <% if should_render_show_field? document, field %>
+            <% if solr_fname == "url" %>
+	       <dt class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_label document, :field => solr_fname %></dt>
+               <dd><a href="<%= document[solr_fname] %>"><%= document[solr_fname] %></a></dd>
+            <% elsif solr_fname == "ref" %>
+               <dt class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_label document, :field => solr_fname %></dt>
+                <dd><%= raw Kramdown::Document.new(document[solr_fname]).to_html %></dd>
+            <% elsif solr_fname == "content" %>
+               <dt class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_label document, :field => solr_fname %></dt>
+		<dd><%= raw Kramdown::Document.new(document[solr_fname]).to_html %></dd>
+            <% elsif solr_fname == "title" %>
+		<dt class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_label document, :field => solr_fname %></dt>
+		<dd>
+		<% for i in 0..document[solr_fname].count-1 %>
+                  <p><%= document[solr_fname][i] %></p>
+		<% end %>
+		</dd>
+            <% elsif solr_fname == "cargo" %>
+                <dt class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_label document, :field => solr_fname %></dt>
+                <dd>
+                <% for i in 0..document[solr_fname].count-1 %>
+                  <p><%= document[solr_fname][i] %></p>
+                <% end %>
+                </dd>
+            <% elsif solr_fname == "cargoss" %>
+                <% for i in 0..document['cargoss'].count-1 %>
+                  <dt class="blacklight-<%= solr_fname.parameterize %>">Cargo <%= i+1 %>:</dt>
+                  <dd>
+			<p><%= document['cargoss'][i] %> <% if document['cargo_abbrevs'][i]!="0" %> ( <%= document['cargo_abbrevs'][i] %> ) <% end %> <% if document['cargo_types'][i] != "0" %> - <%= document['cargo_types'][i] %> <% end %> </p>
+                        <% if document['funcoes'][i]!="0" %> <p>Função: <%= document['funcoes'][i] %> </p><% end %>
+			<% if document['starts'][i]!=0 %> <p>Atuação: <%= document['starts'][i].to_s()[6..7] %>/<%= document['starts'][i].to_s()[4..5] %>/<%= document['starts'][i].to_s()[0..3] %> <% if document['ends'][i]!=0 %> a <%= document['ends'][i].to_s()[6..7] %>/<%= document['ends'][i].to_s()[4..5] %>/<%= document['ends'][i].to_s()[0..3] %> <% end %> </p> <% end %>
+			<% if document['institutions'][i]!="0" %> <p>Instituição: <%= document['institutions'][i] %> </p><% end %>
+			<% if document['cities'][i]!="0" %> <p>Cidade: <%= document['cities'][i] %> </p><% end %> 
+			<% if document['ufs'][i]!="0" %> <p>Estado: <%= document['ufs'][i] %> </p><% end %> 
+			<% if document['countries'][i]!="0" %> Pais: <%= document['countries'][i] %> </p><% end %>
+			<% if document['governments'][i]!="0" %> Governo: <%= document['governments'][i] %> </p><% end %> 
+		  </dd>
+		<% end %>
+            <% else %>
+	       <dt class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_label document, :field => solr_fname %></dt>
+		<dd class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_value document, :field => solr_fname %></dd>
+            <% end %>
+    <% end %>
+  <% end %>
+</dl>
